@@ -2,20 +2,22 @@
 
 # check OS
 [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]] && isWindows=true || isWindows=false
+
 # if linux, need to check if using correct permissions
 if [[ "${isWindows}" = false ]]; then
     if [ "$EUID" -ne 0 ]; then
         echo "Please run as root ('sudo')"
         exit
+    else
+        configDir=/etc/sysconfig
+        configFilePath=${configDir}/IPWatcherEnviron
+        # if dir & file do not exist, add them before trying to scan & create backup
+        mkdir -p ${configDir}
+        touch -a ${configFilePath}
     fi
 fi
 
 rootDir="$(readlink -fm $0/..)"
-configDir=/etc/sysconfig
-configFilePath=${configDir}/IPWatcherEnviron
-# if dir & file do not exist, add them before trying to scan & create backup
-mkdir -p ${configDir}
-touch -a ${configFilePath}
 
 # CLI Flags
 print_flags () {
@@ -65,7 +67,8 @@ setCallback () {
 }
 
 getCurrentCallback () {
-    echo ""
+    callback=$(sed 's/^callback=//' ${configFilePath})
+    echo "${callback}"
 }
 
 # parse command line args
@@ -87,6 +90,8 @@ while [[ "$#" -gt 0 ]]; do
             ;;
             
         --current )
+            currCallback=$(getCurrentCallback)
+            echo "Current callback command: ${currCallback}"
             exit 0
             ;;
 
