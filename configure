@@ -1,0 +1,71 @@
+#!/bin/bash
+
+rootDir="$(readlink -fm $0/..)"
+
+# check OS
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+    # windows
+    echo "Windows"
+else
+    # linux
+    echo "Linux"
+fi
+
+# CLI Flags
+print_flags () {
+    echo "=========================================================================================================="
+    echo "Usage: ./configure"
+    echo "=========================================================================================================="
+    echo "Helper utility to setup the bash command to run as a callback if the public IP changes"
+    echo "=========================================================================================================="
+    echo "How to use:" 
+    echo "  To set the callback for IP changes: ./configure --callback <command to run>"
+    echo "  To start the callback (done automatically when setting callback):  ./configure --start"
+    echo "  To stop callback:  ./configure --stop"
+    echo "  To print current callback command: ./configure --current"
+    echo "=========================================================================================================="
+    echo "Available Flags (mutually exclusive):"
+    echo "  --callback <cmd>: Set the callback command to run when the public IP changes (automatically turns on callback)"
+    echo "  --stop: Turn off the callback"
+    echo "  --start: Turn on the callback"
+    echo "  --current: Print the current callback command"
+    echo "  --help: Prints this message"
+    echo "=========================================================================================================="
+}
+
+# parse command line args
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --callback )
+            cmd="$2"
+            exit 0
+            ;;
+
+        --start )
+            shift # remove --start from CLI
+            exit 0
+            ;;
+
+        --stop )
+            shift # remove --stop from CLI
+            exit 0
+            ;;
+            
+        --current )
+            shift # remove --current from CLI
+            exit 0
+            ;;
+
+        # none of these are reachable if mode is provided due to the break within the "mode" flag
+        -h | --help )
+            print_flags
+            exit 0
+            ;;
+        * )
+            echo "... Unrecognized command"
+            print_flags
+            exit 1
+            ;;
+    esac
+    shift
+done
