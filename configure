@@ -3,13 +3,7 @@
 rootDir="$(readlink -fm $0/..)"
 
 # check OS
-if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
-    # windows
-    : #pass
-else
-    # linux
-    : #pass
-fi
+[[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]] && isWindows=true || isWindows=false
 
 # CLI Flags
 print_flags () {
