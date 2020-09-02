@@ -5,10 +5,10 @@ rootDir="$(readlink -fm $0/..)"
 # check OS
 if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     # windows
-    echo "Windows"
+    : #pass
 else
     # linux
-    echo "Linux"
+    : #pass
 fi
 
 # CLI Flags
