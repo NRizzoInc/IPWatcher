@@ -1,9 +1,21 @@
 #!/bin/bash
 
-rootDir="$(readlink -fm $0/..)"
-
 # check OS
 [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]] && isWindows=true || isWindows=false
+# if linux, need to check if using correct permissions
+if [[ "${isWindows}" = false ]]; then
+    if [ "$EUID" -ne 0 ]; then
+        echo "Please run as root ('sudo')"
+        exit
+    fi
+fi
+
+rootDir="$(readlink -fm $0/..)"
+configDir=/etc/sysconfig
+configFilePath=${configDir}/IPWatcherEnviron
+# if dir & file do not exist, add them before trying to scan & create backup
+mkdir -p ${configDir}
+touch -a ${configFilePath}
 
 # CLI Flags
 print_flags () {
@@ -19,7 +31,7 @@ print_flags () {
     echo "  To print current callback command: ./configure --current"
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"
-    echo "  --callback <cmd>: Set the callback command to run when the public IP changes (automatically turns on callback)"
+    echo "  --callback '<cmd>': Set the callback command to run when the public IP changes (automatically turns on callback) -- use quotes"
     echo "  --stop: Turn off the callback"
     echo "  --start: Turn on the callback"
     echo "  --current: Print the current callback command"
@@ -27,26 +39,54 @@ print_flags () {
     echo "=========================================================================================================="
 }
 
+# Functions
+
+startCallback () {
+    sed -i '/isCallbackOn=/d' ${configFilePath}
+    echo "isCallbackOn=true" >> ${configFilePath}
+    echo "Configured IPWatcher to trigger the set callback"
+}
+
+stopCallback () {
+    sed -i '/isCallbackOn=/d' ${configFilePath}
+    echo "isCallbackOn=false" >> ${configFilePath}
+    echo "Configured IPWatcher to NOT trigger the set callback"
+}
+
+
+# $1 = the callback's command
+setCallback () {
+    # create backup & save new version with updated path
+    cmd="$1"
+    sed -i.bak '/callback=/d' ${configFilePath}
+    echo "callback=\"${cmd}\"" >> ${configFilePath}
+    echo "callback: ${cmd}"
+    startCallback
+}
+
+getCurrentCallback () {
+    echo ""
+}
+
 # parse command line args
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --callback )
-            cmd="$2"
+            setCallback "$2" # $2 is the command in quotes
             exit 0
             ;;
 
         --start )
-            shift # remove --start from CLI
+            startCallback
             exit 0
             ;;
 
         --stop )
-            shift # remove --stop from CLI
+            stopCallback
             exit 0
             ;;
             
         --current )
-            shift # remove --current from CLI
             exit 0
             ;;
 
