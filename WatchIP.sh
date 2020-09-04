@@ -63,6 +63,9 @@ function detectIPChange () {
 }
 
 # parse command line args
+# print flags if none passed
+numArgs=$#
+[[ ${numArgs} -eq 0 ]] && print_flags && exit 1
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --watch )
@@ -97,6 +100,3 @@ while [[ "$#" -gt 0 ]]; do
     esac
     shift
 done
-
-# if reach this point then print flags -- only reach if no flags used
-print_flags
