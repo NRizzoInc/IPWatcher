@@ -1,6 +1,6 @@
 #!/bin/bash
 # @File: WatchIP.sh
-# @Purpose: Detect changes to your machine's public IP and fire the callback set by ./configure
+# @Purpose: Detect changes to your machine's public IP and fire the callback set by ./configure.sh
 # @Author: Nick Rizzo (rizzo.n@northeastern.edu)
 
 
@@ -20,15 +20,15 @@ print_flags () {
     echo "Main script that runs every 'x' seconds to check if your machine's public IP changed"
     echo "=========================================================================================================="
     echo "How to use:" 
-    echo "  To set the callback for IP changes: ./configure --callback <command to run>"
+    echo "  To set the callback for IP changes: ./configure.sh --callback <command to run>"
     echo "  To stop watching, kill with ctrl+c"
-    echo "  Note: You can turn the callback off/on too with ./configure --stop/start"
+    echo "  Note: You can turn the callback off/on too with ./configure.sh --stop/start"
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"
     echo "  --watch <interval(seconds)>: Will check your computer's public ip at the set interval, detect changes, and fire the callback"
     echo "  --get-ip: Get current public IP"
     echo "  --detect-ip-change: Determines if public IP has changes since last run"
-    echo "  --configure: Set/get callback settings (actually just calls './configure')"
+    echo "  --configure: Set/get callback settings (actually just calls './configure.sh')"
     echo "  --help: Prints this message"
     echo "=========================================================================================================="
 }
@@ -107,7 +107,7 @@ while [[ "$#" -gt 0 ]]; do
             startingArgIdx=$((currArg+2))
             cliArgs="${@:${startingArgIdx}}"
             # echo "cliArgs: ${cliArgs}"
-            bash "${rootDir}/configure" ${cliArgs}
+            bash "${rootDir}/configure.sh" ${cliArgs}
             exit 0
             ;;
 
