@@ -45,7 +45,7 @@ function getOldPublicIP () {
 # $1 = new ip
 function setNewPublicIP () {
     newIP=$1
-    sed -i "s/^CurrentIP=.*/CurrentIP=\'${newIP}\'/" ${currInfoPath}
+    sed -i "s/^CurrentIP=.*/CurrentIP=${newIP}/" ${currInfoPath}
 }
 
 function detectIPChange () {
