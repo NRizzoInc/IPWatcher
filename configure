@@ -95,7 +95,6 @@ while [[ "$#" -gt 0 ]]; do
             exit 0
             ;;
 
-        # none of these are reachable if mode is provided due to the break within the "mode" flag
         -h | --help )
             print_flags
             exit 0
