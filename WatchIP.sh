@@ -7,10 +7,30 @@
 # check OS
 [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]] && isWindows=true || isWindows=false
 
-genericInfoPath=/opt/WatchIP/data.txt
-[[ "${isWindows}" == true ]] && currInfoPath="./${genericInfoPath}" || currInfoPath=${genericInfoPath}
+# if linux, need to check if using correct permissions (need to modify stuff at /opt/...)
+if [[ "${isWindows}" = false ]]; then
+    if [ "$EUID" -ne 0 ]; then
+        echo "Please run as root ('sudo')"
+        exit
+    fi
+fi
 
+# currInfoPath = path to data file containing current public ip address
+genericInfoDir=/opt/WatchIP
+genericInfoPath=${genericInfoDir}/data.txt
 rootDir="$(readlink -fm $0/..)"
+[[ "${isWindows}" == true ]] && currInfoPath="${rootDir}/${genericInfoPath}" || currInfoPath=${genericInfoPath}
+
+# Create dummy file if it does not exist
+if test -f ${currInfoPath}; then
+    # echo "${currInfoPath} exists"
+    : # : = pass
+else
+    # if file with past data doesn't exist, create it and add dummy ip data
+    mkdir -p ${genericInfoDir}
+    touch -a ${genericInfoPath}
+    echo -e "CurrentIP=127.0.0.1\n" > ${currInfoPath}
+fi
 
 # CLI Flags
 print_flags () {
@@ -60,7 +80,10 @@ function detectIPChange () {
     else
         setNewPublicIP "${currentIP}"
         echo "Public IP Changed: ${oldIP} --> ${currentIP}"
-        # TODO: Run callback
+
+        # run the callback
+        callback=$(bash "${rootDir}/configure.sh" --current)
+        bash "$callback"
     fi
 }
 
