@@ -55,6 +55,7 @@ function detectIPChange () {
     # TODO: add time this ran
         echo "Public IP Unchanged: ${oldIP}"
     else
+        setNewPublicIP "${currentIP}"
         echo "Public IP Changed: ${oldIP} --> ${currentIP}"
         # TODO: Run callback
     fi
