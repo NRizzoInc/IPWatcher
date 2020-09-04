@@ -25,6 +25,8 @@ print_flags () {
     echo "Usage: ./configure"
     echo "=========================================================================================================="
     echo "Helper utility to setup the bash command to run as a callback if the public IP changes"
+    echo "Run watcher with './WatchIP.sh --watch <interval>'"
+    echo "Note: If your callback requires elevated privaleges, start watch as 'sudo ./WatchIP.sh'"
     echo "=========================================================================================================="
     echo "How to use:" 
     echo "  To set the callback for IP changes: ./configure --callback <command to run>"
