@@ -10,6 +10,8 @@
 genericInfoPath=/opt/WatchIP/data.txt
 [[ "${isWindows}" == true ]] && currInfoPath="./${genericInfoPath}" || currInfoPath=${genericInfoPath}
 
+rootDir="$(readlink -fm $0/..)"
+
 # CLI Flags
 print_flags () {
     echo "=========================================================================================================="
@@ -26,6 +28,7 @@ print_flags () {
     echo "  --watch <interval(seconds)>: Will check your computer's public ip at the set interval, detect changes, and fire the callback"
     echo "  --get-ip: Get current public IP"
     echo "  --detect-ip-change: Determines if public IP has changes since last run"
+    echo "  --configure: Set/get callback settings (actually just calls './configure')"
     echo "  --help: Prints this message"
     echo "=========================================================================================================="
 }
@@ -64,6 +67,7 @@ function detectIPChange () {
 # parse command line args
 # print flags if none passed
 numArgs=$#
+currArg=0
 [[ ${numArgs} -eq 0 ]] && print_flags && exit 1
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -98,6 +102,15 @@ while [[ "$#" -gt 0 ]]; do
             exit 0
             ;;
 
+        --configure )
+            # pass all CLI args (except this one) to configure script
+            startingArgIdx=$((currArg+2))
+            cliArgs="${@:${startingArgIdx}}"
+            # echo "cliArgs: ${cliArgs}"
+            bash "${rootDir}/configure" ${cliArgs}
+            exit 0
+            ;;
+
         -h | --help )
             print_flags
             exit 0
@@ -109,5 +122,6 @@ while [[ "$#" -gt 0 ]]; do
             exit 1
             ;;
     esac
+    currArg=$((currArg+1))
     shift
 done
