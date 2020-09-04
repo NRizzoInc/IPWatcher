@@ -60,14 +60,14 @@ stopCallback () {
 setCallback () {
     # create backup & save new version with updated path
     cmd="$1"
-    sed -i.bak '/callback=/d' ${configFilePath}
-    echo "callback=\"${cmd}\"" >> ${configFilePath}
+    sed -i.bak '/IPChangeCallback=/d' ${configFilePath}
+    echo "IPChangeCallback=\"${cmd}\"" >> ${configFilePath}
     echo "callback: ${cmd}"
     startCallback
 }
 
 getCurrentCallback () {
-    callback=$(sed 's/^callback=//' ${configFilePath})
+    callback=$(sed 's/^IPChangeCallback=//' ${configFilePath})
     echo "${callback}"
 }
 
