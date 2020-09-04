@@ -53,8 +53,7 @@ function detectIPChange () {
     oldIP=$(getOldPublicIP)
     currentIP=$(getPublicIP)
     if [[ "$oldIP" == "$currentIP" ]]; then
-    # TODO: add time this ran
-        echo "Public IP Unchanged: ${oldIP}"
+        echo "$(date): Public IP Unchanged: ${oldIP}"
     else
         setNewPublicIP "${currentIP}"
         echo "Public IP Changed: ${oldIP} --> ${currentIP}"
