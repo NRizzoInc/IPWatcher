@@ -23,6 +23,7 @@ print_flags () {
     echo "  Note: You can turn the callback off/on too with ./configure --stop/start"
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"
+    echo "  --watch: The main usage of this script. Will watch your computer's public ip, detect changes, and fire the callback"
     echo "  --get-ip: Get current public IP"
     echo "  --detect-ip-change: Determines if public IP has changes since last run"
     echo "  --help: Prints this message"
@@ -96,3 +97,6 @@ while [[ "$#" -gt 0 ]]; do
     esac
     shift
 done
+
+# if reach this point then print flags -- only reach if no flags used
+print_flags
