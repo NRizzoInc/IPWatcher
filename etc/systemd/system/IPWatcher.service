@@ -1,0 +1,12 @@
+[Unit]
+Description=Detects Public IP Changes & Performs an Action
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/IPWatcherEnviron
+# ExecStart=/bin/bash ${IPChangeCallback} -- TODO: pass callback as arg to watcher script
+RestartSec=1min
+
+[Install]
+WantedBy=multi-user.target
