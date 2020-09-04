@@ -23,7 +23,7 @@ print_flags () {
     echo "  Note: You can turn the callback off/on too with ./configure --stop/start"
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"
-    echo "  --watch: The main usage of this script. Will watch your computer's public ip, detect changes, and fire the callback"
+    echo "  --watch <interval(seconds)>: Will check your computer's public ip at the set interval, detect changes, and fire the callback"
     echo "  --get-ip: Get current public IP"
     echo "  --detect-ip-change: Determines if public IP has changes since last run"
     echo "  --help: Prints this message"
@@ -69,9 +69,21 @@ numArgs=$#
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --watch )
-            interval=60 # repeat every minute (in seconds)
+            # default to repeat every minute (in seconds)
+            isNumRegex='^[0-9]+([.][0-9]+)?$'
+            interval=60
+            if [[ -z "$2" ]]; then # var exists
+                echo "No watch interval set, using default"
+            else
+                [[ $2 =~ $isNumRegex ]] && interval=$2
+            fi
             echo "Checking public IP every ${interval} seconds..."
-            watch -n ${interval} -x bash -c detectIPChange
+
+            # use sleep in loop to be compatible with windows git bash
+            while true; do
+                detectIPChange
+                sleep "${interval}"
+            done
             exit 0
             ;;
 
