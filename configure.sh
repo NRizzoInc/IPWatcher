@@ -48,12 +48,12 @@ print_flags () {
 
 callbackStatusVname="isCallbackOn="
 startCallback () {
-    sed -i "/${callbackStatusVname}.*/${callbackStatusVname}true/" ${configFilePath}
+    sed -in "s/${callbackStatusVname}.*/${callbackStatusVname}true/" ${configFilePath}
     echo "Configured IPWatcher to trigger the set callback"
 }
 
 stopCallback () {
-    sed -i "/${callbackStatusVname}.*/${callbackStatusVname}false/" ${configFilePath}
+    sed -in "s/${callbackStatusVname}.*/${callbackStatusVname}false/" ${configFilePath}
     echo "Configured IPWatcher to NOT trigger the set callback"
 }
 
@@ -68,8 +68,7 @@ callbackVarName="IPChangeCallback="
 setCallback () {
     # create backup & save new version with updated path
     cmd="$1"
-    sed -i.bak "/${callbackVarName}/d" ${configFilePath}
-    echo "${callbackVarName}\"${cmd}\"" >> ${configFilePath}
+    sed -in "s/${callbackVarName}.*/${cmd}/" ${configFilePath}
     echo "callback: ${cmd}"
     startCallback
 }
