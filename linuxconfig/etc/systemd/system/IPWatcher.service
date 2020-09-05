@@ -4,8 +4,7 @@ After=network-online.target
 Requires=network-online.target
 
 [Service]
-EnvironmentFile=/etc/sysconfig/IPWatcherEnviron
-# ExecStart=/bin/bash ${IPChangeCallback} -- TODO: pass callback as arg to watcher script
+ExecStart=/bin/bash /usr/bin/WatchIP.sh --watch
 RestartSec=1min
 
 [Install]

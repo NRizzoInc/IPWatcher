@@ -1,4 +1,0 @@
-# Template File for IPWatcher's Service Environment File
-
-IPChangeCallback="ls"
-isCallbackOn=false

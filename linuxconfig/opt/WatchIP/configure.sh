@@ -5,18 +5,26 @@ rootDir="$(readlink -fm $0/..)"
 # check OS
 [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]] && isWindows=true || isWindows=false
 
-# if linux, need to check if using correct permissions
-if [[ "${isWindows}" = false ]]; then
-    if [ "$EUID" -ne 0 ]; then
-        echo "Please run as root ('sudo')"
-        exit
-    else
-        configDir=/etc/sysconfig
-        configFilePath=${configDir}/IPWatcherEnviron
-        # if dir & file do not exist, add them before trying to scan or modify then with command line args
-        mkdir -p ${configDir}
-        test -f "${configFilePath}" || cp "${rootDir}${configFilePath}" "${configFilePath}"
-    fi
+
+# configDataPath = path to data file containing current public ip address
+startDir="$(readlink -fm "$0"/..)"
+pkgOptDir=/opt/WatchIP
+if [[ ${isWindows} == true ]]; then
+    rootDir="$(readlink -fm "${startDir}"/../..)" #/linuxconfig/usr/bin -> linuxconfig/usr/ -> /linuxconfig
+    pkgDir="${rootDir}${pkgOptDir}" # /linuxconfig/opt/WatchIP
+else
+    pkgDir="${pkgOptDir}"
+fi
+configDataPath=${pkgDir}/data.txt
+
+# Create dummy file if it does not exist
+if test -f ${configDataPath}; then
+    # echo "${configDataPath} exists"
+    : # : = pass
+else
+    # if file with past data doesn't exist, create it and add dummy ip data
+    mkdir -p ${pkgDir}
+    touch -a ${configDataPath}
 fi
 
 
@@ -50,17 +58,17 @@ print_flags () {
 
 callbackStatusVname="isCallbackOn="
 startCallback () {
-    sed -in "s/${callbackStatusVname}.*/${callbackStatusVname}true/" ${configFilePath}
+    sed -in "s/${callbackStatusVname}.*/${callbackStatusVname}true/" ${configDataPath}
     echo "Configured IPWatcher to trigger the set callback"
 }
 
 stopCallback () {
-    sed -in "s/${callbackStatusVname}.*/${callbackStatusVname}false/" ${configFilePath}
+    sed -in "s/${callbackStatusVname}.*/${callbackStatusVname}false/" ${configDataPath}
     echo "Configured IPWatcher to NOT trigger the set callback"
 }
 
 getCallbackStatus () {
-    statusLine=$(grep "${callbackStatusVname}" ${configFilePath})
+    statusLine=$(grep "${callbackStatusVname}" ${configDataPath})
     status=${statusLine/${callbackStatusVname}/}
     echo "${status}"
 }
@@ -70,13 +78,13 @@ callbackVarName="IPChangeCallback="
 setCallback () {
     # create backup & save new version with updated path
     cmd="$1"
-    sed -in "s/${callbackVarName}.*/${callbackVarName}${cmd}/" ${configFilePath}
+    sed -in "s/${callbackVarName}.*/${callbackVarName}${cmd}/" ${configDataPath}
     echo "callback: ${cmd}"
     startCallback
 }
 
 getCurrentCallback () {
-    callbackLine=$(grep "${callbackVarName}" ${configFilePath})
+    callbackLine=$(grep "${callbackVarName}" ${configDataPath})
     callback=${callbackLine/${callbackVarName}/}
     echo "${callback}"
 }
