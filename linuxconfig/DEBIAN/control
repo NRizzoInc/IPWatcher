@@ -1,0 +1,9 @@
+Package: WatchIP
+Version: 1.0
+Section: custom
+Priority: optional
+Architecture: all
+Essential: no
+Installed-Size: 1024
+Maintainer: NRizzoInc (GitHub)
+Description: Detects Public IP Changes & Triggers a Customizable Action
