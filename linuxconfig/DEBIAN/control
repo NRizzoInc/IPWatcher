@@ -5,5 +5,5 @@ Priority: optional
 Architecture: all
 Essential: no
 Installed-Size: 1024
-Maintainer: NRizzoInc (GitHub)
+Maintainer: Nick Rizzo (NRizzoInc) <rizzo.n@nickmike55@gmail.com>
 Description: Detects Public IP Changes & Triggers a Customizable Action
