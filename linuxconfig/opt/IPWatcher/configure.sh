@@ -126,7 +126,7 @@ while [[ "$#" -gt 0 ]]; do
             exit 0
             ;;
         * )
-            echo "... Unrecognized command"
+            echo "... Unrecognized config command"
             print_flags
             exit 1
             ;;

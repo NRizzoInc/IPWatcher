@@ -140,9 +140,13 @@ while [[ "$#" -gt 0 ]]; do
         --config )
             # pass all CLI args (except this one) to configure script
             startingArgIdx=$((currArg+2))
-            cliArgs="${@:${startingArgIdx}}"
+            cliArgs=("${@:${startingArgIdx}}")
+            cliConfigFlag="${cliArgs[0]}"
+            cliAdditionalFlags=("${cliArgs[@]:1}")
             # echo "cliArgs: ${cliArgs}"
-            bash "${configToolPath}" ${cliArgs}
+            # echo "cliConfigFlag: ${cliConfigFlag}"
+
+            bash "${configToolPath}" "${cliConfigFlag}" "${cliAdditionalFlags[@]}"
             exit 0
             ;;
 
