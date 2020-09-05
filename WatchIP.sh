@@ -81,11 +81,14 @@ function detectIPChange () {
         echo "$(date): Public IP Unchanged: ${oldIP}"
     else
         setNewPublicIP "${currentIP}"
-        echo "Public IP Changed: ${oldIP} --> ${currentIP}"
+        echo "$(date): Public IP Changed: ${oldIP} --> ${currentIP}"
 
-        # run the callback
-        callback=$(bash "${rootDir}/configure.sh" --current)
-        bash "$callback"
+        # run the callback (if on)
+        isCallbackOn=$(bash "${rootDir}/configure.sh" --status)
+        if [[ ${isCallbackOn} == true ]]; then
+            callback=$(bash "${rootDir}/configure.sh" --current)
+            bash "$callback"
+        fi
     fi
 }
 
