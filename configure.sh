@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rootDir="$(readlink -fm $0/..)"
+
 # check OS
 [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]] && isWindows=true || isWindows=false
 
@@ -11,13 +13,12 @@ if [[ "${isWindows}" = false ]]; then
     else
         configDir=/etc/sysconfig
         configFilePath=${configDir}/IPWatcherEnviron
-        # if dir & file do not exist, add them before trying to scan & create backup
+        # if dir & file do not exist, add them before trying to scan or modify then with command line args
         mkdir -p ${configDir}
-        touch -a ${configFilePath}
+        test -f "${configFilePath}" || cp "${rootDir}${configFilePath}" "${configFilePath}"
     fi
 fi
 
-rootDir="$(readlink -fm $0/..)"
 
 # CLI Flags
 print_flags () {
