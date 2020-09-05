@@ -68,7 +68,7 @@ callbackVarName="IPChangeCallback="
 setCallback () {
     # create backup & save new version with updated path
     cmd="$1"
-    sed -in "s/${callbackVarName}.*/${cmd}/" ${configFilePath}
+    sed -in "s/${callbackVarName}.*/${callbackVarName}${cmd}/" ${configFilePath}
     echo "callback: ${cmd}"
     startCallback
 }

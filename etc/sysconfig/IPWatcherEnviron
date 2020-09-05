@@ -1,4 +1,4 @@
 # Template File for IPWatcher's Service Environment File
 
-IPChangeCallback="echo 'test'"
+IPChangeCallback="ls"
 isCallbackOn=false
