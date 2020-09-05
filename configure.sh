@@ -58,18 +58,20 @@ stopCallback () {
 }
 
 
+callbackVarName="IPChangeCallback="
 # $1 = the callback's command
 setCallback () {
     # create backup & save new version with updated path
     cmd="$1"
-    sed -i.bak '/IPChangeCallback=/d' ${configFilePath}
-    echo "IPChangeCallback=\"${cmd}\"" >> ${configFilePath}
+    sed -i.bak "/${callbackVarName}/d" ${configFilePath}
+    echo "${callbackVarName}\"${cmd}\"" >> ${configFilePath}
     echo "callback: ${cmd}"
     startCallback
 }
 
 getCurrentCallback () {
-    callback=$(sed 's/^IPChangeCallback=//' ${configFilePath})
+    callbackLine=$(grep "${callbackVarName}" ${configFilePath})
+    callback=${callbackLine/${callbackVarName}/}
     echo "${callback}"
 }
 
@@ -96,7 +98,7 @@ while [[ "$#" -gt 0 ]]; do
             
         --current )
             currCallback=$(getCurrentCallback)
-            echo "Current callback command: ${currCallback}"
+            echo "${currCallback}"
             exit 0
             ;;
 
