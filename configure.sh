@@ -37,6 +37,7 @@ print_flags () {
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"
     echo "  --callback '<cmd>': Set the callback command to run when the public IP changes (automatically turns on callback) -- use quotes"
+    echo "                      Note: If using paths or '/', you will have to escape each one with a '\' (i.e.: \/path\/to\/my\/script)"
     echo "  --stop: Turn off the callback"
     echo "  --start: Turn on the callback"
     echo "  --current: Print the current callback command"
