@@ -1,5 +1,5 @@
 [Unit]
-Description=Detects Public IP Changes & Performs an Action
+Description=Detects Public IP Changes & Triggers a Customizable Action
 After=network-online.target
 Requires=network-online.target
 
