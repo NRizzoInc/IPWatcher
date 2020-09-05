@@ -1,6 +1,6 @@
 #!/bin/bash
 # @File: WatchIP.sh
-# @Purpose: Detect changes to your machine's public IP and fire the callback set by ./configure.sh
+# @Purpose: Detect changes to your machine's public IP and fire the callback set by /opt/WatchIP/configure.sh
 # @Author: Nick Rizzo (rizzo.n@northeastern.edu)
 
 
@@ -15,21 +15,27 @@ if [[ "${isWindows}" = false ]]; then
     fi
 fi
 
-# currInfoPath = path to data file containing current public ip address
-genericInfoDir=/opt/WatchIP
-genericInfoPath=${genericInfoDir}/data.txt
-rootDir="$(readlink -fm "$0"/..)"
-[[ "${isWindows}" == true ]] && currInfoPath="${rootDir}/${genericInfoPath}" || currInfoPath=${genericInfoPath}
+# configDataPath = path to data file containing current public ip address
+startDir="$(readlink -fm "$0"/..)"
+pkgOptDir=/opt/WatchIP
+if [[ ${isWindows} == true ]]; then
+    rootDir="$(readlink -fm "${startDir}"/../..)" #/linuxconfig/usr/bin -> linuxconfig/usr/ -> /linuxconfig
+    pkgDir="${rootDir}${pkgOptDir}" # /linuxconfig/opt/WatchIP
+else
+    pkgDir="${pkgOptDir}"
+fi
+configDataPath=${pkgDir}/data.txt
+configToolPath=${pkgDir}/configure.sh
 
 # Create dummy file if it does not exist
-if test -f ${currInfoPath}; then
-    # echo "${currInfoPath} exists"
+if test -f ${configDataPath}; then
+    # echo "${configDataPath} exists"
     : # : = pass
 else
     # if file with past data doesn't exist, create it and add dummy ip data
-    mkdir -p ${genericInfoDir}
-    touch -a ${genericInfoPath}
-    echo -e "CurrentIP=127.0.0.1\n" > ${currInfoPath}
+    mkdir -p ${pkgDir}
+    touch -a ${configDataPath}
+    echo -e "CurrentIP=127.0.0.1\n" > ${configDataPath}
 fi
 
 # CLI Flags
@@ -40,15 +46,15 @@ print_flags () {
     echo "Main script that runs every 'x' seconds to check if your machine's public IP changed"
     echo "=========================================================================================================="
     echo "How to use:" 
-    echo "  To set the callback for IP changes: ./configure.sh --callback <command to run>"
+    echo "  To set the callback for IP changes: ./WatchIP.sh --configure --callback <command to run>"
     echo "  To stop watching, kill with ctrl+c"
-    echo "  Note: You can turn the callback off/on too with ./configure.sh --stop/start"
+    echo "  Note: You check all configuration options with ./WatchIP.sh --configure --help"
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"
     echo "  --watch <interval(seconds)>: Will check your computer's public ip at the set interval, detect changes, and fire the callback"
     echo "  --get-ip: Get current public IP"
     echo "  --detect-ip-change: Determines if public IP has changes since last run"
-    echo "  --configure: Set/get callback settings (actually just calls './configure.sh')"
+    echo "  --configure: Set/get callback settings (actually just calls './WatchIP.sh --configure ')"
     echo "  --help: Prints this message"
     echo "=========================================================================================================="
 }
@@ -63,7 +69,7 @@ function getPublicIP () {
 # returns old ip
 ipVname="CurrentIP="
 function getOldPublicIP () {
-    oldIPLine=$(grep "${ipVname}" ${currInfoPath})
+    oldIPLine=$(grep "${ipVname}" ${configDataPath})
     oldIP=${oldIPLine/${ipVname}/}
     echo "${oldIP}"
 }
@@ -71,7 +77,7 @@ function getOldPublicIP () {
 # $1 = new ip
 function setNewPublicIP () {
     newIP=$1
-    sed -i "s/^${ipVname}.*/${ipVname}${newIP}/" ${currInfoPath}
+    sed -i "s/^${ipVname}.*/${ipVname}${newIP}/" ${configDataPath}
 }
 
 function detectIPChange () {
@@ -84,9 +90,9 @@ function detectIPChange () {
         echo "$(date): Public IP Changed: ${oldIP} --> ${currentIP}"
 
         # run the callback (if on)
-        isCallbackOn=$(bash "${rootDir}/configure.sh" --status)
+        isCallbackOn=$(bash "${configToolPath}" --status)
         if [[ ${isCallbackOn} == true ]]; then
-            callback=$("${rootDir}/configure.sh" --current)
+            callback=$("${configToolPath}" --current)
             echo "Running command: ${callback}"
             bash -c "$callback"
         fi
@@ -136,7 +142,7 @@ while [[ "$#" -gt 0 ]]; do
             startingArgIdx=$((currArg+2))
             cliArgs="${@:${startingArgIdx}}"
             # echo "cliArgs: ${cliArgs}"
-            bash "${rootDir}/configure.sh" ${cliArgs}
+            bash "${configToolPath}" ${cliArgs}
             exit 0
             ;;
 
