@@ -39,24 +39,29 @@ print_flags () {
     echo "  --stop: Turn off the callback"
     echo "  --start: Turn on the callback"
     echo "  --current: Print the current callback command"
+    echo "  --status: Print the on/off status of the callback (true=on, false=off)"
     echo "  --help: Prints this message"
     echo "=========================================================================================================="
 }
 
 # Functions
 
+callbackStatusVname="isCallbackOn="
 startCallback () {
-    sed -i '/isCallbackOn=/d' ${configFilePath}
-    echo "isCallbackOn=true" >> ${configFilePath}
+    sed -i "/${callbackStatusVname}.*/${callbackStatusVname}true/" ${configFilePath}
     echo "Configured IPWatcher to trigger the set callback"
 }
 
 stopCallback () {
-    sed -i '/isCallbackOn=/d' ${configFilePath}
-    echo "isCallbackOn=false" >> ${configFilePath}
+    sed -i "/${callbackStatusVname}.*/${callbackStatusVname}false/" ${configFilePath}
     echo "Configured IPWatcher to NOT trigger the set callback"
 }
 
+getCallbackStatus () {
+    statusLine=$(grep "${callbackStatusVname}" ${configFilePath})
+    status=${statusLine/${callbackStatusVname}/}
+    echo "${status}"
+}
 
 callbackVarName="IPChangeCallback="
 # $1 = the callback's command
@@ -95,7 +100,12 @@ while [[ "$#" -gt 0 ]]; do
             stopCallback
             exit 0
             ;;
-            
+
+        --status )
+            getCallbackStatus
+            exit 0
+            ;;
+
         --current )
             currCallback=$(getCurrentCallback)
             echo "${currCallback}"
