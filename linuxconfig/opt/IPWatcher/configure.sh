@@ -8,10 +8,10 @@ rootDir="$(readlink -fm $0/..)"
 
 # configDataPath = path to data file containing current public ip address
 startDir="$(readlink -fm "$0"/..)"
-pkgOptDir=/opt/WatchIP
+pkgOptDir=/opt/IPWatcher
 if [[ ${isWindows} == true ]]; then
     rootDir="$(readlink -fm "${startDir}"/../..)" #/linuxconfig/usr/bin -> linuxconfig/usr/ -> /linuxconfig
-    pkgDir="${rootDir}${pkgOptDir}" # /linuxconfig/opt/WatchIP
+    pkgDir="${rootDir}${pkgOptDir}" # /linuxconfig/opt/IPWatcher
 else
     pkgDir="${pkgOptDir}"
 fi

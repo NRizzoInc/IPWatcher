@@ -1,6 +1,6 @@
 #!/bin/bash
 # @File: WatchIP.sh
-# @Purpose: Detect changes to your machine's public IP and fire the callback set by /opt/WatchIP/configure.sh
+# @Purpose: Detect changes to your machine's public IP and fire the callback set by /opt/IPWatcher/configure.sh
 # @Author: Nick Rizzo (rizzo.n@northeastern.edu)
 
 
@@ -17,10 +17,10 @@ fi
 
 # configDataPath = path to data file containing current public ip address
 startDir="$(readlink -fm "$0"/..)"
-pkgOptDir=/opt/WatchIP
+pkgOptDir=/opt/IPWatcher
 if [[ ${isWindows} == true ]]; then
     rootDir="$(readlink -fm "${startDir}"/../..)" #/linuxconfig/usr/bin -> linuxconfig/usr/ -> /linuxconfig
-    pkgDir="${rootDir}${pkgOptDir}" # /linuxconfig/opt/WatchIP
+    pkgDir="${rootDir}${pkgOptDir}" # /linuxconfig/opt/IPWatcher
 else
     pkgDir="${pkgOptDir}"
 fi
@@ -46,15 +46,15 @@ print_flags () {
     echo "Main script that runs every 'x' seconds to check if your machine's public IP changed"
     echo "=========================================================================================================="
     echo "How to use:" 
-    echo "  To set the callback for IP changes: ./WatchIP.sh --configure --callback <command to run>"
+    echo "  To set the callback for IP changes: ./WatchIP.sh --config --callback <command to run>"
     echo "  To stop watching, kill with ctrl+c"
-    echo "  Note: You check all configuration options with ./WatchIP.sh --configure --help"
+    echo "  Note: You check all configuration options with ./WatchIP.sh --config --help"
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"
     echo "  --watch <interval(seconds)>: Will check your computer's public ip at the set interval, detect changes, and fire the callback"
     echo "  --get-ip: Get current public IP"
     echo "  --detect-ip-change: Determines if public IP has changes since last run"
-    echo "  --configure: Set/get callback settings (actually just calls './WatchIP.sh --configure ')"
+    echo "  --config: Set/get callback settings"
     echo "  --help: Prints this message"
     echo "=========================================================================================================="
 }
@@ -137,7 +137,7 @@ while [[ "$#" -gt 0 ]]; do
             exit 0
             ;;
 
-        --configure )
+        --config )
             # pass all CLI args (except this one) to configure script
             startingArgIdx=$((currArg+2))
             cliArgs="${@:${startingArgIdx}}"
