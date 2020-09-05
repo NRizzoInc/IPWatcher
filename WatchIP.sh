@@ -18,7 +18,7 @@ fi
 # currInfoPath = path to data file containing current public ip address
 genericInfoDir=/opt/WatchIP
 genericInfoPath=${genericInfoDir}/data.txt
-rootDir="$(readlink -fm $0/..)"
+rootDir="$(readlink -fm "$0"/..)"
 [[ "${isWindows}" == true ]] && currInfoPath="${rootDir}/${genericInfoPath}" || currInfoPath=${genericInfoPath}
 
 # Create dummy file if it does not exist
@@ -61,15 +61,17 @@ function getPublicIP () {
 }
 
 # returns old ip
+ipVname="CurrentIP="
 function getOldPublicIP () {
-    oldIP=$(sed 's/^CurrentIP=//' ${currInfoPath})
+    oldIPLine=$(grep "${ipVname}" ${currInfoPath})
+    oldIP=${oldIPLine/${ipVname}/}
     echo "${oldIP}"
 }
 
 # $1 = new ip
 function setNewPublicIP () {
     newIP=$1
-    sed -i "s/^CurrentIP=.*/CurrentIP=${newIP}/" ${currInfoPath}
+    sed -i "s/^${ipVname}.*/${ipVname}${newIP}/" ${currInfoPath}
 }
 
 function detectIPChange () {
