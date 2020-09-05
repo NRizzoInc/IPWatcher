@@ -86,8 +86,9 @@ function detectIPChange () {
         # run the callback (if on)
         isCallbackOn=$(bash "${rootDir}/configure.sh" --status)
         if [[ ${isCallbackOn} == true ]]; then
-            callback=$(bash "${rootDir}/configure.sh" --current)
-            bash "$callback"
+            callback=$("${rootDir}/configure.sh" --current)
+            echo "Running command: ${callback}"
+            bash -c "$callback"
         fi
     fi
 }
