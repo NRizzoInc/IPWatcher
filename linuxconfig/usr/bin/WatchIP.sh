@@ -49,6 +49,7 @@ print_flags () {
     echo "  To set the callback for IP changes: ./WatchIP.sh --config --callback <command to run>"
     echo "  To stop watching, kill with ctrl+c"
     echo "  Note: You check all configuration options with ./WatchIP.sh --config --help"
+    echo "  Note: If running as a service, change the interval in /etc/systemd/system/IPWatcher.service"
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"
     echo "  --watch <interval(seconds)>: Will check your computer's public ip at the set interval, detect changes, and fire the callback"
