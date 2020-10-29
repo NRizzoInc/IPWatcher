@@ -4,7 +4,8 @@ After=network-online.target
 Requires=network-online.target
 
 [Service]
-ExecStart=/bin/bash /usr/bin/WatchIP.sh --watch
+# change the number after "watch" to set the interval (in seconds)
+ExecStart=/bin/bash /usr/bin/WatchIP.sh --watch 3600
 RestartSec=1min
 
 [Install]
