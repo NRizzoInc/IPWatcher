@@ -1,0 +1,5 @@
+# Data file for IPWatcher
+
+IPChangeCallback="ls"
+isCallbackOn=false
+CurrentIP=127.0.0.1
