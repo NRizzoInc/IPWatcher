@@ -124,6 +124,7 @@ while [[ "$#" -gt 0 ]]; do
                 [[ $2 =~ $isNumRegex ]] && interval=$2
             fi
             echo "Checking public IP every ${interval} seconds..." 2>&1 | tee "${logPath}"
+            echo "Stop with control+c"
 
             # use sleep in loop to be compatible with windows git bash
             while true; do
