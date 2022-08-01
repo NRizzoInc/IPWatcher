@@ -46,7 +46,7 @@ print_flags () {
     echo "=========================================================================================================="
     echo "Main script that runs every 'x' seconds to check if your machine's public IP changed"
     echo "=========================================================================================================="
-    echo "How to use:" 
+    echo "How to use:"
     echo "  To set the callback for IP changes: ./IPWatcher.sh --config --callback <command to run>"
     echo "  To stop watching, kill with ctrl+c"
     echo "  Note: You check all configuration options with ./IPWatcher.sh --config --help"
@@ -57,6 +57,7 @@ print_flags () {
     echo "  --get-ip: Get current public IP"
     echo "  --detect-ip-change: Determines if public IP has changes since last run"
     echo "  --config: Set/get callback settings"
+    echo "  --logs: Reads the log file (located at ${logPath})"
     echo "  --help: Prints this message"
     echo "=========================================================================================================="
 }
@@ -99,6 +100,11 @@ function detectIPChange () {
             bash -c "$callback"
         fi
     fi
+}
+
+function readLogs() {
+    echo "Reading from log file ${logPath}"
+    less "${logPath}"
 }
 
 # parse command line args
@@ -149,6 +155,11 @@ while [[ "$#" -gt 0 ]]; do
             # echo "cliConfigFlag: ${cliConfigFlag}"
 
             bash "${configToolPath}" "${cliConfigFlag}" "${cliAdditionalFlags[@]}"
+            exit 0
+            ;;
+
+        --logs )
+            readLogs
             exit 0
             ;;
 
