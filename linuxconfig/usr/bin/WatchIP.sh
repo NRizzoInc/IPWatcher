@@ -1,7 +1,7 @@
 #!/bin/bash
 # @File: WatchIP.sh
 # @Purpose: Detect changes to your machine's public IP and fire the callback set by /opt/IPWatcher/configure.sh
-# @Author: Nick Rizzo (rizzo.n@northeastern.edu)
+# @Author: Nick Rizzo (nickrizzosw@gmail.com)
 
 
 # check OS
@@ -24,8 +24,9 @@ if [[ ${isWindows} == true ]]; then
 else
     pkgDir="${pkgOptDir}"
 fi
-configDataPath=${pkgDir}/data.txt
-configToolPath=${pkgDir}/configure.sh
+configDataPath="${pkgDir}/data.txt"
+configToolPath="${pkgDir}/configure.sh"
+logPath="${pkgDir}/logs.txt"
 
 # Create dummy file if it does not exist
 if test -f ${configDataPath}; then
@@ -85,16 +86,16 @@ function detectIPChange () {
     oldIP=$(getOldPublicIP)
     currentIP=$(getPublicIP)
     if [[ "$oldIP" == "$currentIP" ]]; then
-        echo "$(date): Public IP Unchanged: ${oldIP}"
+        echo "$(date): Public IP Unchanged: ${oldIP}" 2>&1 | tee "${logPath}"
     else
         setNewPublicIP "${currentIP}"
-        echo "$(date): Public IP Changed: ${oldIP} --> ${currentIP}"
+        echo "$(date): Public IP Changed: ${oldIP} --> ${currentIP}" 2>&1 | tee "${logPath}"
 
         # run the callback (if on)
         isCallbackOn=$(bash "${configToolPath}" --status)
         if [[ ${isCallbackOn} == true ]]; then
             callback=$("${configToolPath}" --current)
-            echo "Running command: ${callback}"
+            echo "Running command: ${callback}" 2>&1 | tee "${logPath}"
             bash -c "$callback"
         fi
     fi
@@ -112,11 +113,11 @@ while [[ "$#" -gt 0 ]]; do
             isNumRegex='^[0-9]+([.][0-9]+)?$'
             interval=60
             if [[ -z "$2" ]]; then # var exists
-                echo "No watch interval set, using default"
+                echo "No watch interval set, using default" 2>&1 | tee "${logPath}"
             else
                 [[ $2 =~ $isNumRegex ]] && interval=$2
             fi
-            echo "Checking public IP every ${interval} seconds..."
+            echo "Checking public IP every ${interval} seconds..." 2>&1 | tee "${logPath}"
 
             # use sleep in loop to be compatible with windows git bash
             while true; do
@@ -128,13 +129,13 @@ while [[ "$#" -gt 0 ]]; do
 
         --get-ip )
             publicIP=$(getPublicIP)
-            echo "Public IP: ${publicIP}"
+            echo "Public IP: ${publicIP}" 2>&1 | tee "${logPath}"
             exit 0
             ;;
 
         --detect-ip-change )
             detectMsg=$(detectIPChange)
-            echo "${detectMsg}"
+            echo "${detectMsg}" 2>&1 | tee "${logPath}"
             exit 0
             ;;
 
