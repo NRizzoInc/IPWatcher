@@ -1,5 +1,5 @@
 #!/bin/bash
-# @File: WatchIP.sh
+# @File: IPWatcher.sh
 # @Purpose: Detect changes to your machine's public IP and fire the callback set by /opt/IPWatcher/configure.sh
 # @Author: Nick Rizzo (nickrizzosw@gmail.com)
 
@@ -42,14 +42,14 @@ fi
 # CLI Flags
 print_flags () {
     echo "=========================================================================================================="
-    echo "Usage: ./WatchIP.sh"
+    echo "Usage: ./IPWatcher.sh"
     echo "=========================================================================================================="
     echo "Main script that runs every 'x' seconds to check if your machine's public IP changed"
     echo "=========================================================================================================="
     echo "How to use:" 
-    echo "  To set the callback for IP changes: ./WatchIP.sh --config --callback <command to run>"
+    echo "  To set the callback for IP changes: ./IPWatcher.sh --config --callback <command to run>"
     echo "  To stop watching, kill with ctrl+c"
-    echo "  Note: You check all configuration options with ./WatchIP.sh --config --help"
+    echo "  Note: You check all configuration options with ./IPWatcher.sh --config --help"
     echo "  Note: If running as a service, change the interval in /etc/systemd/system/IPWatcher.service"
     echo "=========================================================================================================="
     echo "Available Flags (mutually exclusive):"

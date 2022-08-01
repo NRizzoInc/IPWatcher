@@ -1,1 +1,1 @@
-./linuxconfig/opt/IPWatcher/configure.sh
+./src/opt/IPWatcher/configure.sh

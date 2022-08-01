@@ -10,8 +10,8 @@ rootDir="$(readlink -fm $0/..)"
 startDir="$(readlink -fm "$0"/..)"
 pkgOptDir=/opt/IPWatcher
 if [[ ${isWindows} == true ]]; then
-    rootDir="$(readlink -fm "${startDir}"/../..)" #/linuxconfig/usr/bin -> linuxconfig/usr/ -> /linuxconfig
-    pkgDir="${rootDir}${pkgOptDir}" # /linuxconfig/opt/IPWatcher
+    rootDir="$(readlink -fm "${startDir}"/../..)" #/src/usr/bin -> src/usr/ -> /src
+    pkgDir="${rootDir}${pkgOptDir}" # /src/opt/IPWatcher
 else
     pkgDir="${pkgOptDir}"
 fi
@@ -34,10 +34,10 @@ print_flags () {
     echo "Usage: ./configure.sh"
     echo "=========================================================================================================="
     echo "Helper utility to setup the bash command to run as a callback if the public IP changes"
-    echo "Run watcher with './WatchIP.sh --watch <interval>'"
-    echo "Note: If your callback requires elevated privaleges, start watch as 'sudo ./WatchIP.sh'"
+    echo "Run watcher with './IPWatcher.sh --watch <interval>'"
+    echo "Note: If your callback requires elevated privaleges, start watch as 'sudo ./IPWatcher.sh'"
     echo "=========================================================================================================="
-    echo "How to use:" 
+    echo "How to use:"
     echo "  To set the callback for IP changes: ./configure.sh --callback <command to run>"
     echo "  To start the callback (done automatically when setting callback):  ./configure.sh --start"
     echo "  To stop callback:  ./configure.sh --stop"

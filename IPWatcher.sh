@@ -1,1 +1,1 @@
-./linuxconfig/usr/bin/IPWatcher.sh
+./src/usr/bin/IPWatcher.sh
