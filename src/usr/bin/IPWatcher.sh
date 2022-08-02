@@ -87,16 +87,16 @@ function detectIPChange () {
     oldIP=$(getOldPublicIP)
     currentIP=$(getPublicIP)
     if [[ "$oldIP" == "$currentIP" ]]; then
-        echo "$(date): Public IP Unchanged: ${oldIP}" 2>&1 | tee "${logPath}"
+        echo "$(date): Public IP Unchanged: ${oldIP}" 2>&1 | tee -a "${logPath}"
     else
         setNewPublicIP "${currentIP}"
-        echo "$(date): Public IP Changed: ${oldIP} --> ${currentIP}" 2>&1 | tee "${logPath}"
+        echo "$(date): Public IP Changed: ${oldIP} --> ${currentIP}" 2>&1 | tee -a "${logPath}"
 
         # run the callback (if on)
         isCallbackOn=$(bash "${configToolPath}" --status)
         if [[ ${isCallbackOn} == true ]]; then
             callback=$("${configToolPath}" --current)
-            echo "Running command: ${callback}" 2>&1 | tee "${logPath}"
+            echo "Running command: ${callback}" 2>&1 | tee -a "${logPath}"
             bash -c "$callback"
         fi
     fi
@@ -119,11 +119,11 @@ while [[ "$#" -gt 0 ]]; do
             isNumRegex='^[0-9]+([.][0-9]+)?$'
             interval=60
             if [[ -z "$2" ]]; then # var exists
-                echo "No watch interval set, using default" 2>&1 | tee "${logPath}"
+                echo "No watch interval set, using default" 2>&1 | tee -a "${logPath}"
             else
                 [[ $2 =~ $isNumRegex ]] && interval=$2
             fi
-            echo "Checking public IP every ${interval} seconds..." 2>&1 | tee "${logPath}"
+            echo "Checking public IP every ${interval} seconds..." 2>&1 | tee -a "${logPath}"
             echo "Stop with control+c"
 
             # use sleep in loop to be compatible with windows git bash
@@ -136,13 +136,13 @@ while [[ "$#" -gt 0 ]]; do
 
         --get-ip )
             publicIP=$(getPublicIP)
-            echo "Public IP: ${publicIP}" 2>&1 | tee "${logPath}"
+            echo "Public IP: ${publicIP}" 2>&1 | tee -a "${logPath}"
             exit 0
             ;;
 
         --detect-ip-change )
             detectMsg=$(detectIPChange)
-            echo "${detectMsg}" 2>&1 | tee "${logPath}"
+            echo "${detectMsg}" 2>&1 | tee -a "${logPath}"
             exit 0
             ;;
 
